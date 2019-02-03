@@ -30,6 +30,11 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExceed>  getFilteredWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+        //return getFilteredWithExceeded_Loops( mealList, startTime, endTime, caloriesPerDay);
+        return getFilteredWithExceeded_Streams( mealList, startTime, endTime, caloriesPerDay);
+    }
+
+    private static List<UserMealWithExceed> getFilteredWithExceeded_Loops(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay){
         Map<LocalDate, Long> caloriesInDay = new HashMap<>();
         for (UserMeal userMeal : mealList) {
             LocalDate localDate = userMeal.getDateTime().toLocalDate();
@@ -55,4 +60,21 @@ public class UserMealsUtil {
         return filtered;
     }
 
+    private static List<UserMealWithExceed> getFilteredWithExceeded_Streams(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay){
+
+        Map<LocalDate, Integer> caloriesInDay = mealList.stream()
+                .collect(Collectors.groupingBy(meal -> meal.getDateTime().toLocalDate(),
+                        Collectors.summingInt(UserMeal::getCalories))
+                );
+
+        return mealList.stream()
+                .filter( userMeal -> TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime))
+                .map(userMeal -> new UserMealWithExceed(
+                        userMeal.getDateTime(),
+                        userMeal.getDescription(),
+                        userMeal.getCalories(),
+                        caloriesInDay.getOrDefault(userMeal.getDateTime().toLocalDate(), 0) > caloriesPerDay
+                        ))
+                .collect(Collectors.toList());
+    }
 }
