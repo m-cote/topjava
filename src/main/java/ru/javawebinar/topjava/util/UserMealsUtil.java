@@ -30,8 +30,9 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExceed>  getFilteredWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        //return getFilteredWithExceeded_Loops( mealList, startTime, endTime, caloriesPerDay);
-        return getFilteredWithExceeded_Streams( mealList, startTime, endTime, caloriesPerDay);
+//        return getFilteredWithExceeded_Loops( mealList, startTime, endTime, caloriesPerDay);
+//        return getFilteredWithExceeded_Streams( mealList, startTime, endTime, caloriesPerDay);
+        return getFilteredWithExceeded_Loops1( mealList, startTime, endTime, caloriesPerDay);
     }
 
     private static List<UserMealWithExceed> getFilteredWithExceeded_Loops(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay){
@@ -77,4 +78,51 @@ public class UserMealsUtil {
                         ))
                 .collect(Collectors.toList());
     }
+
+    private static List<UserMealWithExceed> getFilteredWithExceeded_Loops1(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay){
+
+        mealList.sort(Comparator.comparing(UserMeal::getDateTime));
+
+
+        List<UserMealWithExceed> filtered = new ArrayList<>();
+        List<UserMeal> currentDayMeals = new ArrayList<>();
+        int caloriesInDay = 0;
+        LocalDate currentDate = null;
+        for (UserMeal userMeal : mealList) {
+
+            LocalDate userMealDate = userMeal.getDateTime().toLocalDate();
+            if( currentDate != null && !currentDate.equals( userMealDate)) {
+
+                for (UserMeal filteredMeal : currentDayMeals) {
+
+                    filtered.add( new UserMealWithExceed(
+                            filteredMeal.getDateTime(),
+                            filteredMeal.getDescription(),
+                            filteredMeal.getCalories(),
+                            caloriesInDay > caloriesPerDay));
+                }
+                caloriesInDay = 0;
+                currentDayMeals.clear();
+            }
+
+            currentDate = userMealDate;
+            if (TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
+                currentDayMeals.add(userMeal);
+            }
+            caloriesInDay += userMeal.getCalories();
+
+        }
+
+        for (UserMeal filteredMeal : currentDayMeals) {
+
+            filtered.add( new UserMealWithExceed(
+                    filteredMeal.getDateTime(),
+                    filteredMeal.getDescription(),
+                    filteredMeal.getCalories(),
+                    caloriesInDay > caloriesPerDay));
+        }
+
+        return filtered;
+    }
+
 }
