@@ -1,0 +1,6 @@
+tr.mealWithExcess {
+    color: red;
+}
+tr.mealWithoutExcess {
+    color: green;
+}
