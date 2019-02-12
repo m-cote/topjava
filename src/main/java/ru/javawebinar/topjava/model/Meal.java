@@ -4,17 +4,25 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class Meal {
+public class Meal implements Cloneable{
+
+    private final long id;
+
     private final LocalDateTime dateTime;
 
     private final String description;
 
     private final int calories;
 
-    public Meal(LocalDateTime dateTime, String description, int calories) {
+    public Meal( long id, LocalDateTime dateTime, String description, int calories) {
+        this.id = id;
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
+    }
+
+    public Meal( LocalDateTime dateTime, String description, int calories) {
+        this(0, dateTime, description, calories);
     }
 
     public LocalDateTime getDateTime() {
@@ -36,4 +44,9 @@ public class Meal {
     public LocalTime getTime() {
         return dateTime.toLocalTime();
     }
+
+    public long getId() {
+        return id;
+    }
+
 }
