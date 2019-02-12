@@ -22,7 +22,8 @@
             <td><input type="number" name="calories" value="${meal.calories}"/></td>
         </tr>
         <tr>
-            <td><input type="submit" value="Submit" /></td>
+            <td><input type="submit" name="update" value="Сохранить"/></td>
+            <td><input type="submit" name="delete" value="Удалить"/></td>
         </tr>
     </table>
 </form>

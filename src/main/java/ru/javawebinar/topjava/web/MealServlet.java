@@ -60,11 +60,18 @@ public class MealServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
 
         long id = Long.parseLong(req.getParameter("id"));
-        LocalDateTime ldt = LocalDateTime.parse(req.getParameter("dateTime"), ISO_LOCAL_DATE_TIME);
-        String description = req.getParameter("description");
-        int calories = Integer.parseInt( req.getParameter("calories"));
 
-        repository.save( new Meal(id, ldt, description, calories));
+        if (req.getParameter("update") != null) {
+            LocalDateTime ldt = LocalDateTime.parse(req.getParameter("dateTime"), ISO_LOCAL_DATE_TIME);
+            String description = req.getParameter("description");
+            int calories = Integer.parseInt( req.getParameter("calories"));
+
+            repository.save( new Meal(id, ldt, description, calories));
+
+        } else if (req.getParameter("delete") != null) {
+
+            repository.delete( new Meal(id,null,null, 0));
+        }
 
         log.debug("redirect to meals");
         resp.sendRedirect("meals");
