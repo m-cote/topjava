@@ -48,7 +48,10 @@ public class MealServlet extends HttpServlet {
             case "delete": {
                 long id = Long.parseLong(req.getParameter("id"));
                 repository.delete( id);
-            }
+                log.debug("redirect to meals");
+                resp.sendRedirect("meals");
+
+            } break;
             default: {
 
                 log.debug("forward to meals");
