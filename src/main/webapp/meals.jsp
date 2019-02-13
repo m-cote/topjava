@@ -20,7 +20,8 @@
         <fmt:formatDate pattern="${dateFormat}" value="${parsedDateTime}"/>
         </p></td>
     <td><p><c:out value="${meal.calories}"></c:out></p></td>
-        <td><a href="meals?action=edit&id=${meal.id}">edit</a></td>
+        <td><a href="meals?action=edit&id=${meal.id}">Редактировать</a></td>
+        <td><a href="meals?action=delete&id=${meal.id}">Удалить</a></td>
     </tr>
 </c:forEach>
 </table>

@@ -3,7 +3,7 @@ package ru.javawebinar.topjava.web;
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
-import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.repository.BasicCrudRepository;
 import ru.javawebinar.topjava.repository.MealRepositoryInMemotyImpl;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.TimeUtil;
@@ -23,35 +23,44 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
 
-    private static final MealRepository repository = new MealRepositoryInMemotyImpl();
+    private static final int CALORIES_PER_DAY = 2000;
     private static final Logger log = getLogger(MealServlet.class);
+
+    private final BasicCrudRepository repository = new MealRepositoryInMemotyImpl();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String action = req.getParameter("action");
-        if (action == null) {
+        if (action == null) action = "";
 
-            log.debug("forward to meals");
+        switch (action) {
+            case "edit": {
+                long id = Long.parseLong(req.getParameter("id"));
+                Optional<Meal> optionalMeal = repository.get(id);
+                if (optionalMeal.isPresent()) {
+                    log.debug("forward to mealEdit");
+                    req.setAttribute("meal", optionalMeal.get());
+                    req.getRequestDispatcher("/mealEdit.jsp").forward(req, resp);
+                }
+            } break;
 
-            final int caloriesPerDay = 2000;
-            List<MealTo> mealToList = MealsUtil.getFilteredWithExcess(repository.getAll(), LocalTime.MIN, LocalTime.MAX, caloriesPerDay);
-
-            req.setAttribute("dateFormat", TimeUtil.dateFormat);
-            req.setAttribute("meals", mealToList);
-            req.getRequestDispatcher("/meals.jsp").forward(req, resp);
-        }else if("edit".equals(action)){
-
-            long id = Long.parseLong(req.getParameter("id"));
-            Optional<Meal> optionalMeal = repository.get(id);
-            if (optionalMeal.isPresent()){
-                log.debug("forward to mealEdit");
-                req.setAttribute("meal", optionalMeal.get());
-                req.getRequestDispatcher("/mealEdit.jsp").forward(req, resp);
+            case "delete": {
+                long id = Long.parseLong(req.getParameter("id"));
+                repository.delete( id);
             }
+            default: {
 
+                log.debug("forward to meals");
+
+                List<MealTo> mealToList = MealsUtil.getFilteredWithExcess(repository.getAll(), LocalTime.MIN, LocalTime.MAX, CALORIES_PER_DAY);
+
+                req.setAttribute("dateFormat", TimeUtil.dateFormat);
+                req.setAttribute("meals", mealToList);
+                req.getRequestDispatcher("/meals.jsp").forward(req, resp);
+            }
+            break;
         }
-
     }
 
     @Override
@@ -70,7 +79,7 @@ public class MealServlet extends HttpServlet {
 
         } else if (req.getParameter("delete") != null) {
 
-            repository.delete( new Meal(id,null,null, 0));
+            repository.delete( id);
         }
 
         log.debug("redirect to meals");

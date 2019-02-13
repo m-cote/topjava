@@ -7,9 +7,7 @@ import java.util.Optional;
 public interface BasicCrudRepository<T, ID extends Serializable> {
 
     Optional<T> get(ID id);
-    boolean exists(ID id);
     List<T> getAll();
-    long count();
     T save(T entity);
-    void delete(T entity);
+    void delete(ID id);
 }
