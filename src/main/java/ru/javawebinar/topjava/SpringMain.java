@@ -29,11 +29,11 @@ public class SpringMain {
             }
             System.out.println("==============================================");
 
-            for (MealTo mealTo : mealRestController.getAllByDateTime(LocalDate.of(2015,5, 31),
-                                                            null,
-                                                            LocalTime.of(13, 00),
-                                                            null)
-                ) {
+            for (MealTo mealTo : mealRestController.getAllByDateTime(LocalDate.of(2015, 5, 31),
+                    null,
+                    LocalTime.of(13, 00),
+                    null)
+            ) {
                 System.out.println(mealTo);
             }
             System.out.println("==============================================");

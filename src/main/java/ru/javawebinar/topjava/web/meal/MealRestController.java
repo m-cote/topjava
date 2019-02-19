@@ -27,47 +27,46 @@ public class MealRestController {
         this.service = service;
     }
 
-    public Meal create(Meal meal){
+    public Meal create(Meal meal) {
         log.info("create {}", meal);
-        checkNew( meal);
+        checkNew(meal);
         return service.create(authUserId(), meal);
     }
 
-    public Meal get(int id){
+    public Meal get(int id) {
         log.info("get {}", id);
         return service.get(authUserId(), id);
     }
 
-    public void delete(int id){
+    public void delete(int id) {
         log.info("delete {}", id);
         service.delete(authUserId(), id);
     }
 
-    public void update(Meal meal, int id){
+    public void update(Meal meal, int id) {
         log.info("update {} with id {}", meal, id);
         assureIdConsistent(meal, id);
         service.update(authUserId(), meal);
     }
 
-    public List<MealTo> getAllByDateTime(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime){
+    public List<MealTo> getAllByDateTime(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
 
-        LocalDate startDateFilter = startDate == null ? LocalDate.MIN: startDate;
-        LocalTime startTimeFilter = startTime == null ? LocalTime.MIN: startTime;
-        LocalDate endDateFilter = endDate == null ? LocalDate.MAX: endDate;
-        LocalTime endTimeFilter = endTime == null ? LocalTime.MAX: endTime;
+        LocalDate startDateFilter = startDate == null ? LocalDate.MIN : startDate;
+        LocalTime startTimeFilter = startTime == null ? LocalTime.MIN : startTime;
+        LocalDate endDateFilter = endDate == null ? LocalDate.MAX : endDate;
+        LocalTime endTimeFilter = endTime == null ? LocalTime.MAX : endTime;
 
         log.info("getAllByDateTime from {} {} to {} {}", startDateFilter, startTimeFilter, endDateFilter, endTimeFilter);
 
         List<Meal> meals = service.getAllByDate(authUserId(), startDateFilter, endDateFilter);
 
-        return MealsUtil.getFilteredWithExcess( meals, authUserCaloriesPerDay(), startTimeFilter, endTimeFilter);
+        return MealsUtil.getFilteredWithExcess(meals, authUserCaloriesPerDay(), startTimeFilter, endTimeFilter);
     }
 
 
-
-    public List<MealTo> getAll(){
+    public List<MealTo> getAll() {
         log.info("getAll");
-        return MealsUtil.getWithExcess(service.getAll(authUserId()),authUserCaloriesPerDay());
+        return MealsUtil.getWithExcess(service.getAll(authUserId()), authUserCaloriesPerDay());
     }
 
 }
