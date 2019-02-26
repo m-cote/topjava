@@ -38,3 +38,5 @@ create table meals
   calories int not null
 );
 
+create unique index meals_unique_user_id_date_time
+  on meals (user_id asc, date_time desc);
