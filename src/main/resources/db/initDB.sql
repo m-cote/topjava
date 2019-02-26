@@ -32,7 +32,8 @@ create table meals
       primary key,
   user_id integer not null
     constraint userId
-      references users,
+      references users
+      ON DELETE CASCADE,
   date_time TIMESTAMP not null,
   description VARCHAR,
   calories int not null

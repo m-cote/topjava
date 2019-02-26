@@ -13,13 +13,13 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 import static ru.javawebinar.topjava.MealTestData.*;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
+        "classpath:spring/spring-jdbc.xml",
         "classpath:spring/spring-db.xml"
 })
 @RunWith(SpringRunner.class)
@@ -48,13 +48,13 @@ public class MealServiceTest {
 
     @Test
     public void delete() {
-        service.delete(ADMIN_MEAL_ID,ADMIN_ID);
-        assertMatch(service.getAll(ADMIN_ID), Collections.EMPTY_LIST);
+        service.delete(USER_MEAL_ID, USER_ID);
+        assertMatch(service.getAll(USER_ID), USER_MEAL6, USER_MEAL5, USER_MEAL4, USER_MEAL3, USER_MEAL2);
     }
 
     @Test(expected = NotFoundException.class)
     public void deleteNotFound() {
-        service.delete(ADMIN_MEAL_ID,USER_ID);
+        service.delete(ADMIN_MEAL_ID, USER_ID);
     }
 
     @Test
@@ -64,13 +64,13 @@ public class MealServiceTest {
                 LocalDate.of(2019, 02, 26),
                 USER_ID);
 
-        assertMatch(meals, USER_MEAL6,USER_MEAL5,USER_MEAL4);
+        assertMatch(meals, USER_MEAL6, USER_MEAL5, USER_MEAL4);
     }
 
     @Test
     public void getAll() {
         List<Meal> all = service.getAll(USER_ID);
-        assertMatch(all, USER_MEAL6,USER_MEAL5,USER_MEAL4,USER_MEAL3,USER_MEAL2,USER_MEAL1);
+        assertMatch(all, USER_MEAL6, USER_MEAL5, USER_MEAL4, USER_MEAL3, USER_MEAL2, USER_MEAL1);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class MealServiceTest {
         Meal updated = new Meal(USER_MEAL1);
         updated.setDescription("updated description");
         updated.setCalories(999);
-        updated.setDateTime(LocalDateTime.now());
+        updated.setDateTime(LocalDateTime.of(2019, 02, 26, 0, 0));
         service.update(updated, USER_ID);
         assertMatch(service.get(USER_MEAL_ID, USER_ID), updated);
     }
@@ -90,14 +90,14 @@ public class MealServiceTest {
         Meal updated = new Meal(ADMIN_MEAL);
         updated.setDescription("updated description");
         updated.setCalories(999);
-        updated.setDateTime(LocalDateTime.now());
+        updated.setDateTime(LocalDateTime.of(2019, 02, 26, 0, 0));
         service.update(updated, USER_ID);
     }
 
     @Test
     public void create() {
 
-        Meal newMeal = new Meal(LocalDateTime.now(),"new meal", 999);
+        Meal newMeal = new Meal(LocalDateTime.of(2019, 02, 26, 0, 0), "new meal", 999);
         Meal createdMeal = service.create(newMeal, ADMIN_ID);
         newMeal.setId(createdMeal.getId());
         assertMatch(service.getAll(ADMIN_ID), newMeal, ADMIN_MEAL);
