@@ -1,8 +1,13 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.rules.ExternalResource;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -38,6 +43,59 @@ public class MealServiceTest {
 
     @Autowired
     private MealService service;
+
+    @ClassRule
+    public static final ClassTimerRule classTimer = new ClassTimerRule();
+
+    private static class ClassTimerRule extends ExternalResource {
+
+        private StringBuilder testResults;
+
+        void addTestResult(String testResult) {
+            testResults.append(testResult);
+        }
+
+        @Override
+        protected void before() throws Throwable {
+            testResults = new StringBuilder();
+            log.info("\n======================================= MEAL SERVICE TESTS STARTED =======================================");
+        }
+
+        @Override
+        protected void after() {
+
+            log.info("\n======================================= MEAL SERVICE TESTS FINISHED =======================================" +
+                    testResults.toString() +
+                    "\n===========================================================================================================");
+        }
+    }
+
+
+    @Rule
+    public TestRule timer = new TestWatcher() {
+
+        private long startTime;
+
+        @Override
+        protected void starting(Description description) {
+            super.starting(description);
+            String methodName = description.getMethodName();
+            startTime = System.currentTimeMillis();
+            log.info("\n--------------------------------------- test " + methodName + " started ---------------------------------------");
+        }
+
+        @Override
+        protected void finished(Description description) {
+            super.finished(description);
+            String methodName = description.getMethodName();
+            long totalTime = System.currentTimeMillis() - startTime;
+            String testResult = "\n" + String.format("%-20s", methodName) + " - " + String.format("%8.3f", totalTime / 1000.0) + " s";
+            classTimer.addTestResult(testResult);
+            log.info("\n--------------------------------------- test " + methodName + " finished ---------------------------------------" +
+                    testResult +
+                    "\n--------------------------------------------------------------------------------------------------------------");
+        }
+    };
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
