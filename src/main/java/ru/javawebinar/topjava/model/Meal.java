@@ -1,15 +1,13 @@
 package ru.javawebinar.topjava.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name = Meal.UPDATE, query = "UPDATE Meal SET description=:description, calories=:calories, date_time=:date_time  WHERE id=:id AND user.id=:user_id"),
         @NamedQuery(name = Meal.GET_ALL, query = "SELECT m FROM Meal m WHERE m.user.id=:user_id ORDER BY m.dateTime DESC "),
         @NamedQuery(name = Meal.GET_BY_PERIOD, query = "SELECT m FROM Meal m WHERE m.user.id=:user_id AND m.dateTime BETWEEN :startDate AND :endDate ORDER BY m.dateTime DESC "),
         @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.user.id=:user_id AND m.id=:id"),
@@ -27,12 +25,13 @@ public class Meal extends AbstractBaseEntity {
     private LocalDateTime dateTime;
 
     @Column(name = "description", nullable = false)
-    @NotNull
+    @NotBlank
+    @Size(min = 2, max = 120)
     private String description;
 
-    @Column(name = "calories", nullable = false)
-    @Min(0)
-    @NotNull
+    @Column(name = "calories")
+    @Min(10)
+    @Max(5000)
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)

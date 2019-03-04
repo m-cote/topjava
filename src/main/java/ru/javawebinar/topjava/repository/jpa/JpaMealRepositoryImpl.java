@@ -29,15 +29,11 @@ public class JpaMealRepositoryImpl implements MealRepository {
             return meal;
         } else {
 
-            int rowsAffected = em.createNamedQuery(Meal.UPDATE)
-                    .setParameter("description", meal.getDescription())
-                    .setParameter("calories", meal.getCalories())
-                    .setParameter("date_time", meal.getDateTime())
-                    .setParameter("id", meal.getId())
-                    .setParameter("user_id", userId)
-                    .executeUpdate();
+            Meal found = em.find(Meal.class, meal.getId());
+            if (found == null || found.getUser().getId() != userId) return null;
+            meal.setUser(em.getReference(User.class, userId));
+            return em.merge(meal);
 
-            return rowsAffected != 0 ? meal : null;
         }
     }
 
