@@ -5,8 +5,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.ExternalResource;
-import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
+import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -70,26 +69,14 @@ public class MealServiceTest {
         }
     }
 
-
     @Rule
-    public TestRule timer = new TestWatcher() {
-
-        private long startTime;
+    public Stopwatch stopwatch = new Stopwatch() {
 
         @Override
-        protected void starting(Description description) {
-            super.starting(description);
-            String methodName = description.getMethodName();
-            startTime = System.currentTimeMillis();
-            log.info("\n--------------------------------------- test " + methodName + " started ---------------------------------------");
-        }
+        protected void finished(long nanos, Description description) {
 
-        @Override
-        protected void finished(Description description) {
-            super.finished(description);
             String methodName = description.getMethodName();
-            long totalTime = System.currentTimeMillis() - startTime;
-            String testResult = "\n" + String.format("%-20s", methodName) + " - " + String.format("%8.3f", totalTime / 1000.0) + " s";
+            String testResult = "\n" + String.format("%-20s", methodName) + " - " + String.format("%8d", nanos / 1000000) + " ms";
             classTimer.addTestResult(testResult);
             log.info("\n--------------------------------------- test " + methodName + " finished ---------------------------------------" +
                     testResult +
