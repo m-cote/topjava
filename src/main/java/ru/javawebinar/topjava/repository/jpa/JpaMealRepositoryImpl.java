@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.repository.jpa;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
@@ -22,15 +21,14 @@ public class JpaMealRepositoryImpl implements MealRepository {
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {
-        Assert.notNull(meal, "meal must not be null");
+
         if (meal.isNew()) {
             meal.setUser(em.getReference(User.class, userId));
             em.persist(meal);
             return meal;
         } else {
 
-            Meal found = em.find(Meal.class, meal.getId());
-            if (found == null || found.getUser().getId() != userId) return null;
+            if (get(meal.getId(), userId) == null) return null;
             meal.setUser(em.getReference(User.class, userId));
             return em.merge(meal);
 
@@ -49,7 +47,7 @@ public class JpaMealRepositoryImpl implements MealRepository {
     @Override
     public Meal get(int id, int userId) {
         Meal meal = em.find(Meal.class, id);
-        if (meal.getUser().getId() != userId) {
+        if (meal == null || meal.getUser().getId() != userId) {
             return null;
         }
         return meal;

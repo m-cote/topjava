@@ -15,7 +15,6 @@ import java.time.LocalTime;
 @Table(name = "meals", uniqueConstraints = {@UniqueConstraint(name = "meals_unique_user_datetime_idx", columnNames = {"user_id", "date_time"})})
 public class Meal extends AbstractBaseEntity {
 
-    public static final String UPDATE = "Meal.update";
     public static final String GET_ALL = "Meal.getAll";
     public static final String GET_BY_PERIOD = "Meal.getByPeriod";
     public static final String DELETE = "Meal.delete";
