@@ -26,4 +26,8 @@ public class Profiles {
             }
         }
     }
+
+    public static String getActiveProfiles(){
+        return Profiles.REPOSITORY_IMPLEMENTATION+","+Profiles.getActiveDbProfile();
+    }
 }
