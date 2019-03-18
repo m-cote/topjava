@@ -8,6 +8,8 @@ import org.junit.rules.ExternalResource;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.RunWith;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -15,6 +17,8 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.TimingRules;
+
+import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
@@ -36,6 +40,9 @@ abstract public class AbstractServiceTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
+    @Autowired
+    private Environment environment;
+
     static {
         // needed only for java.util.logging (postgres driver)
         SLF4JBridgeHandler.install();
@@ -49,5 +56,9 @@ abstract public class AbstractServiceTest {
         } catch (Exception e) {
             Assert.assertThat(getRootCause(e), instanceOf(exceptionClass));
         }
+    }
+
+    public boolean isProfileActive(String profile){
+        return Arrays.asList(environment.getActiveProfiles()).contains(profile);
     }
 }
