@@ -13,9 +13,7 @@ import ru.javawebinar.topjava.repository.JpaUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.ConstraintViolationException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static ru.javawebinar.topjava.UserTestData.*;
 
@@ -34,7 +32,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     public void setUp() throws Exception {
         cacheManager.getCache("users").clear();
         if (!isProfileActive(Profiles.JDBC)) {
-            if (jpaUtil != null){
+            if (jpaUtil != null) {
                 jpaUtil.clear2ndLevelHibernateCache();
             }
         }
@@ -77,6 +75,12 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     }
 
     @Test
+    public void getWithMultipleRoles() throws Exception {
+        User user = service.get(ADMIN_ID);
+        assertMatch(user, ADMIN);
+    }
+
+    @Test
     public void getByEmail() throws Exception {
         User user = service.getByEmail("user@yandex.ru");
         assertMatch(user, USER);
@@ -87,6 +91,16 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         User updated = new User(USER);
         updated.setName("UpdatedName");
         updated.setCaloriesPerDay(330);
+        service.update(updated);
+        assertMatch(service.get(USER_ID), updated);
+    }
+
+    @Test
+    public void updateRoles() throws Exception {
+        User updated = new User(USER);
+        Set<Role> roles = new HashSet<>();
+        roles.add(Role.ROLE_ADMIN);
+        updated.setRoles(roles);
         service.update(updated);
         assertMatch(service.get(USER_ID), updated);
     }
