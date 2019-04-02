@@ -96,4 +96,14 @@ public class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(contentJson(MealsUtil.getWithExcess(List.of(MEAL3, MEAL2), DEFAULT_CALORIES_PER_DAY)));
     }
 
+    @Test
+    void testGetFilteredByDate() throws Exception {
+        mockMvc.perform(get(REST_URL + "filter?startDate=" + LocalDate.of(2015, Month.MAY, 30)
+                + "&endDate=" + LocalDate.of(2015, Month.MAY, 30)
+        ))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(contentJson(MealsUtil.getWithExcess(List.of(MEAL3, MEAL2, MEAL1), DEFAULT_CALORIES_PER_DAY)));
+    }
+
 }
