@@ -1,29 +1,29 @@
-REST API
+REST
 =========
 
-##Данные о еде
+##Meals
 
-Пример получения данных одной еды:
+Getting a meal:
 
 `curl -X GET \
   http://localhost:8080/topjava/rest/meals/100002`
 
-Пример получения данных всей еды пользователя:
+Getting all user meals:
 
 `curl -X GET \
   http://localhost:8080/topjava/rest/meals`
 
-Пример получения данных всей еды пользователя за один день:
+Getting all user meals filtered by date:
 
 `curl -X GET \
   'http://localhost:8080/topjava/rest/meals/filter?startDate=2015-05-30&endDate=2015-05-30'`
 
-Пример получения данных всей еды пользователя за период:
+Getting all user meals filtered by date and time:
 
 `curl -X GET \
   'http://localhost:8080/topjava/rest/meals/filter?startDate=2015-05-30&startTime=13:00:00&endDate=2015-05-30&endTime=23:59:59.9999'`
 
-Пример создания еды:
+Creating a meal:
 
 `curl -X POST \
   http://localhost:8080/topjava/rest/meals \
@@ -34,7 +34,7 @@ REST API
 "calories":1100
 }'`
 
-Пример обновления данных еды:
+Updating a meal:
 
 `curl -X PUT \
   http://localhost:8080/topjava/rest/meals/100004 \
@@ -45,7 +45,41 @@ REST API
 "calories":1500
 }'`
 
-Пример удаления еды:
+Deleting a meal:
 
 `curl -X DELETE \
   http://localhost:8080/topjava/rest/meals/100003`
+
+##Users
+
+Getting user data:
+
+`curl -X GET \
+  http://localhost:8080/topjava/rest/admin/users/100000`
+
+Getting all users data:
+
+`curl -X GET \
+  http://localhost:8080/topjava/rest/admin/users`
+
+Creating new user:
+
+`curl -X POST \
+  http://localhost:8080/topjava/rest/admin/users \
+  -H 'Content-Type: application/json' \
+  -d '{"name": "New2",
+ "email": "new2@yandex.ru",
+ "password": "passwordNew",
+ "roles": ["ROLE_USER"]
+}'`
+
+Updating a user:
+
+`curl -X PUT \
+  http://localhost:8080/topjava/rest/admin/users/100000 \
+  -H 'Content-Type: application/json' \
+  -d '{"name": "UserUpdated",
+ "email": "user@yandex.ru",
+ "password": "passwordNew",
+ "roles": ["ROLE_USER"]
+}'`
