@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.web.meal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -8,10 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.web.converters.StringToLocalDateConverter;
-import ru.javawebinar.topjava.web.converters.StringToLocalTimeConverter;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -21,9 +22,7 @@ public class MealRestController extends AbstractMealController {
     public static final String REST_URL = "/rest/meals";
 
     @Autowired
-    private StringToLocalDateConverter localDateConverter;
-    @Autowired
-    private StringToLocalTimeConverter localTimeConverter;
+    private ConversionService conversionService;
 
     @Override
     @GetMapping
@@ -66,6 +65,10 @@ public class MealRestController extends AbstractMealController {
                                    @RequestParam(required = false) String endDate,
                                    @RequestParam(required = false) String endTime) {
 
-        return super.getBetween(localDateConverter.convert(startDate), localTimeConverter.convert(startTime), localDateConverter.convert(endDate), localTimeConverter.convert(endTime));
+        return super.getBetween(conversionService.convert(startDate, LocalDate.class),
+                conversionService.convert(startTime, LocalTime.class),
+                conversionService.convert(endDate, LocalDate.class),
+                conversionService.convert(endTime, LocalTime.class)
+        );
     }
 }

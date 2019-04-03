@@ -11,9 +11,6 @@ import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.Month;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -87,10 +84,10 @@ public class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void testGetFiltered() throws Exception {
-        mockMvc.perform(get(REST_URL + "filter?startDate=" + LocalDate.of(2015, Month.MAY, 30)
-                + "&startTime=" + LocalTime.of(13, 0, 0)
-                + "&endDate=" + LocalDate.of(2015, Month.MAY, 30)
-                + "&endTime=" + LocalTime.MAX
+        mockMvc.perform(get(REST_URL + "filter?startDate=2015-05-30"
+                + "&startTime=13:00"
+                + "&endDate=2015-05-30"
+                + "&endTime=23:59:59.999999999"
         ))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -99,9 +96,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void testGetFilteredByDate() throws Exception {
-        mockMvc.perform(get(REST_URL + "filter?startDate=" + LocalDate.of(2015, Month.MAY, 30)
-                + "&endDate=" + LocalDate.of(2015, Month.MAY, 30)
-        ))
+        mockMvc.perform(get(REST_URL + "filter?startDate=2015-05-30&endDate=2015-05-30"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(writeValue(MealsUtil.getWithExcess(List.of(MEAL3, MEAL2, MEAL1), DEFAULT_CALORIES_PER_DAY))));
