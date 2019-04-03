@@ -24,6 +24,7 @@ import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.TestUtil.readFromJson;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
+import static ru.javawebinar.topjava.web.json.JsonUtil.writeValue;
 
 public class MealRestControllerTest extends AbstractControllerTest {
 
@@ -47,7 +48,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(MealsUtil.getWithExcess(MEALS, DEFAULT_CALORIES_PER_DAY)));
+                .andExpect(content().json(writeValue(MealsUtil.getWithExcess(MEALS, DEFAULT_CALORIES_PER_DAY))));
     }
 
     @Test
@@ -93,7 +94,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
         ))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(MealsUtil.getWithExcess(List.of(MEAL3, MEAL2), DEFAULT_CALORIES_PER_DAY)));
+                .andExpect(content().json(writeValue(MealsUtil.getWithExcess(List.of(MEAL3, MEAL2), DEFAULT_CALORIES_PER_DAY))));
     }
 
     @Test
@@ -103,7 +104,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
         ))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(MealsUtil.getWithExcess(List.of(MEAL3, MEAL2, MEAL1), DEFAULT_CALORIES_PER_DAY)));
+                .andExpect(content().json(writeValue(MealsUtil.getWithExcess(List.of(MEAL3, MEAL2, MEAL1), DEFAULT_CALORIES_PER_DAY))));
     }
 
 }
