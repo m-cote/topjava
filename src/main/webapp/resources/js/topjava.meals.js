@@ -1,6 +1,6 @@
 $(function () {
     makeEditable({
-            ajaxUrl: "ajax/meals/",
+            ajaxUrl: baseAjaxUrl(),
             datatableApi: $("#datatable").DataTable({
                 "paging": false,
                 "info": true,
@@ -33,3 +33,13 @@ $(function () {
         }
     );
 });
+
+function baseAjaxUrl() {
+    return "ajax/meals/";
+}
+
+function filter() {
+    context.ajaxUrl = baseAjaxUrl()+"filter?"+$('#filterForm').serialize();
+    updateTable();
+}
+
