@@ -1,6 +1,6 @@
 $(function () {
     makeEditable({
-            ajaxUrl: baseAjaxUrl(),
+            ajaxUrl: "ajax/meals/",
             datatableApi: $("#datatable").DataTable({
                 "paging": false,
                 "info": true,
@@ -26,7 +26,7 @@ $(function () {
                 "order": [
                     [
                         0,
-                        "des"
+                        "desc"
                     ]
                 ]
             })
@@ -34,17 +34,14 @@ $(function () {
     );
 });
 
-function baseAjaxUrl() {
-    return "ajax/meals/";
-}
-
 function filter() {
-    context.ajaxUrl = baseAjaxUrl()+"filter?"+$('#filterForm').serialize();
+    context.filterUrl = "filter?"+$('#filterForm').serialize();
     updateTable();
 }
 
 function cancelFilter() {
-    context.ajaxUrl = baseAjaxUrl();
+    context.filterUrl = "";
+    $("#filterForm").find(":input").val("");
     updateTable();
 }
 
