@@ -43,3 +43,8 @@ function filter() {
     updateTable();
 }
 
+function cancelFilter() {
+    context.ajaxUrl = baseAjaxUrl();
+    updateTable();
+}
+

@@ -14,7 +14,7 @@
     <h3 class="text-center"><spring:message code="meal.title"/></h3>
 
     <form id="filterForm">
-        <div class="row text-left">
+        <div class="row text-left bg-white">
 
             <div class="form-group col">
                 <label for="startDate" class="col-form-label"><spring:message code="meal.startDate"/></label>
@@ -47,8 +47,12 @@
             </div>
 
         </div>
-        <div class="row text-right">
+        <div class="row text-right bg-light">
             <div class="col">
+                <button type="button" class="btn btn-secondary" onclick="cancelFilter()">
+                    <span class="fa fa-window-close"></span>
+                    <spring:message code="common.cancel"/>
+                </button>
                 <button type="button" class="btn btn-primary" onclick="filter()">
                     <span class="fa fa-filter"></span>
                     <spring:message code="meal.filter"/>
