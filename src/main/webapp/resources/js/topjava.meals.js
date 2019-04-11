@@ -1,6 +1,7 @@
 $(function () {
     makeEditable({
             ajaxUrl: "ajax/meals/",
+            filterUrl: "",
             datatableApi: $("#datatable").DataTable({
                 "paging": false,
                 "info": true,

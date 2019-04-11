@@ -2,6 +2,7 @@
 $(function () {
     makeEditable({
             ajaxUrl: "ajax/admin/users/",
+            filterUrl: "",
             datatableApi: $("#datatable").DataTable({
                 "paging": false,
                 "info": true,
@@ -40,3 +41,18 @@ $(function () {
         }
     );
 });
+
+function userEnabledOnChange(userId) {
+    let element = document.getElementById("enabled_"+userId);
+    setUserEnabled(userId, element.checked);
+}
+
+function setUserEnabled(userId, enabled) {
+
+    $.ajax({
+        url: context.ajaxUrl + userId+"?enabled="+enabled,
+        type: "PATCH"
+    }).done(function () {
+        successNoty("Updated");
+    });
+}
