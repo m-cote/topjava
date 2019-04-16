@@ -3,12 +3,14 @@ package ru.javawebinar.topjava;
 import org.springframework.test.web.servlet.ResultMatcher;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.time.Month;
 import java.util.List;
 
 import static java.time.LocalDateTime.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static ru.javawebinar.topjava.TestUtil.getContent;
 import static ru.javawebinar.topjava.TestUtil.readListFromJsonMvcResult;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
@@ -54,4 +56,13 @@ public class MealTestData {
     public static ResultMatcher contentJson(Iterable<MealTo> expected) {
         return result -> assertThat(readListFromJsonMvcResult(result, MealTo.class)).isEqualTo(expected);
     }
+
+    public static ResultMatcher contentString(Iterable<?> expected) {
+        return result -> assertThat(getContent(result)).isEqualTo(JsonUtil.writeValue(expected));
+    }
+
+    public static ResultMatcher contentString(MealTo... expected) {
+        return contentString(List.of(expected));
+    }
+
 }
