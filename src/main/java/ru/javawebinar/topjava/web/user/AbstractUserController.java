@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import ru.javawebinar.topjava.Profiles;
@@ -42,6 +44,11 @@ public abstract class AbstractUserController {
     public List<User> getAll() {
         log.info("getAll");
         return service.getAll();
+    }
+
+    public DataTablesOutput<User> getAll(DataTablesInput input) {
+        log.info("getAll");
+        return service.getAll(input);
     }
 
     public User get(int id) {

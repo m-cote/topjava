@@ -1,6 +1,8 @@
 package ru.javawebinar.topjava.service;
 
 
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.UserTo;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -22,6 +24,8 @@ public interface UserService {
     void update(UserTo user);
 
     List<User> getAll();
+
+    DataTablesOutput<User> getAll(DataTablesInput input);
 
     void enable(int id, boolean enable);
 

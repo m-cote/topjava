@@ -55,21 +55,20 @@ $(function () {
                         }
                     },
                     {
+                        "searchable": false,
                         "orderable": false,
                         "defaultContent": "",
                         "render": renderEditBtn
                     },
                     {
+                        "searchable": false,
                         "orderable": false,
                         "defaultContent": "",
                         "render": renderDeleteBtn
                     }
                 ],
                 "order": [
-                    [
-                        0,
-                        "asc"
-                    ]
+                    [0, "asc"], [1, "asc"]
                 ],
                 "createdRow": function (row, data, dataIndex) {
                     if (!data.enabled) {

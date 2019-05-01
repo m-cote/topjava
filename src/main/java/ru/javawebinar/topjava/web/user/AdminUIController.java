@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.web.user;
 
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +10,6 @@ import ru.javawebinar.topjava.to.UserTo;
 import ru.javawebinar.topjava.util.UserUtil;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/ajax/admin/users")
@@ -16,8 +17,8 @@ public class AdminUIController extends AbstractUserController {
 
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<User> getAll() {
-        return super.getAll();
+    public DataTablesOutput<User> getAll(@Valid DataTablesInput input) {
+        return super.getAll(input);
     }
 
     @Override

@@ -43,11 +43,13 @@ $(function () {
                 {
                     "render": renderEditBtn,
                     "defaultContent": "",
+                    "searchable": false,
                     "orderable": false
                 },
                 {
                     "render": renderDeleteBtn,
                     "defaultContent": "",
+                    "searchable": false,
                     "orderable": false
                 }
             ],

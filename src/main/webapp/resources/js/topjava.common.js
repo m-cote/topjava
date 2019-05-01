@@ -8,12 +8,32 @@ function makeEditable(ctx) {
             {
                 "ajax": {
                     "url": context.ajaxUrl,
-                    "dataSrc": ""
+                    "dataSrc": "data"
                 },
-                "paging": false,
+                "serverSide": true,
+                "paging": true,
                 "info": true,
                 "language": {
-                    "search": i18n["common.search"]
+                    "processing":    i18n["datatables.processing"],
+                    "search":        i18n["datatables.search"],
+                    "lengthMenu":    i18n["datatables.lengthMenu"],
+                    "info":          i18n["datatables.info"],
+                    "infoEmpty":     i18n["datatables.infoEmpty"],
+                    "infoFiltered":  i18n["datatables.infoFiltered"],
+                    "infoPostFix":   i18n["datatables.infoPostFix"],
+                    "loadingRecords":i18n["datatables.loadingRecords"],
+                    "zeroRecords":   i18n["datatables.zeroRecords"],
+                    "emptyTable":    i18n["datatables.emptyTable"],
+                    "paginate": {
+                        "first":     i18n["datatables.paginate.first"],
+                        "previous":  i18n["datatables.paginate.previous"],
+                        "next":      i18n["datatables.paginate.next"],
+                        "last":      i18n["datatables.paginate.last"],
+                    },
+                    "aria": {
+                        "sortAscending":  i18n["datatables.aria.sortAscending"],
+                        "sortDescending": i18n["datatables.aria.sortDescending"]
+                    }
                 }
             }
         ));

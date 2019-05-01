@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.web.user;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import ru.javawebinar.topjava.HasEmail;
@@ -18,15 +19,18 @@ public class UniqueMailValidator implements org.springframework.validation.Valid
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return HasEmail.class.isAssignableFrom(clazz);
+        return HasEmail.class.isAssignableFrom(clazz) ||
+               DataTablesInput.class.equals(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        HasEmail user = ((HasEmail) target);
-        User dbUser = repository.getByEmail(user.getEmail().toLowerCase());
-        if (dbUser != null && !dbUser.getId().equals(user.getId())) {
-            errors.rejectValue("email", ExceptionInfoHandler.EXCEPTION_DUPLICATE_EMAIL);
+        if (target instanceof HasEmail) {
+            HasEmail user = ((HasEmail) target);
+            User dbUser = repository.getByEmail(user.getEmail().toLowerCase());
+            if (dbUser != null && !dbUser.getId().equals(user.getId())) {
+                errors.rejectValue("email", ExceptionInfoHandler.EXCEPTION_DUPLICATE_EMAIL);
+            }
         }
     }
 }

@@ -142,6 +142,6 @@
 
     <beans profile="datajpa">
         <context:component-scan base-package="ru.javawebinar.**.repository.datajpa"/>
-        <jpa:repositories base-package="ru.javawebinar.**.repository.datajpa"/>
+        <jpa:repositories base-package="ru.javawebinar.**.repository.datajpa" factory-class="org.springframework.data.jpa.datatables.repository.DataTablesRepositoryFactoryBean"/>
     </beans>
 </beans>

@@ -8,7 +8,23 @@
     i18n["addTitle"] = '<spring:message code="${param.page}.add"/>';
     i18n["editTitle"] = '<spring:message code="${param.page}.edit"/>';
 
-    <c:forEach var='key' items='<%=new String[]{"common.deleted", "common.saved", "common.enabled", "common.disabled", "common.search", "common.confirm"}%>'>
+    <c:forEach var='key' items='<%=new String[]{"common.deleted", "common.saved", "common.enabled", "common.disabled", "common.confirm",
+                                                "datatables.processing",
+                                                "datatables.search",
+                                                "datatables.lengthMenu",
+                                                "datatables.info",
+                                                "datatables.infoEmpty",
+                                                "datatables.infoFiltered",
+                                                "datatables.infoPostFix",
+                                                "datatables.loadingRecords",
+                                                "datatables.zeroRecords",
+                                                "datatables.emptyTable",
+                                                "datatables.paginate.first",
+                                                "datatables.paginate.previous",
+                                                "datatables.paginate.next",
+                                                "datatables.paginate.last",
+                                                "datatables.aria.sortAscending",
+                                                "datatables.aria.sortDescending"}%>'>
     i18n['${key}'] = '<spring:message code="${key}"/>';
     </c:forEach>
 </script>
