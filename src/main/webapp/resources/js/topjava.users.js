@@ -77,7 +77,7 @@ $(function () {
                 }
             },
             updateTable: function () {
-                $.get(userAjaxUrl, updateTableByData);
+                reloadAjaxFromUrl(userAjaxUrl);
             }
         }
     );

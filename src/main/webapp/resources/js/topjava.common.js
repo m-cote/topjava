@@ -81,8 +81,8 @@ function deleteRow(id) {
     }
 }
 
-function updateTableByData(data) {
-    context.datatableApi.clear().rows.add(data).draw();
+function reloadAjaxFromUrl(url) {
+    context.datatableApi.ajax.url(url).load();
 }
 
 function save() {

@@ -1,16 +1,12 @@
 const mealAjaxUrl = "ajax/profile/meals/";
 
 function updateFilteredTable() {
-    $.ajax({
-        type: "GET",
-        url: mealAjaxUrl + "filter",
-        data: $("#filter").serialize()
-    }).done(updateTableByData);
+    reloadAjaxFromUrl(mealAjaxUrl + "filter");
 }
 
 function clearFilter() {
     $("#filter")[0].reset();
-    $.get(mealAjaxUrl, updateTableByData);
+    reloadAjaxFromUrl(mealAjaxUrl);
 }
 
 // http://api.jquery.com/jQuery.ajax/#using-converters
@@ -18,7 +14,9 @@ $.ajaxSetup({
     converters: {
         "text json": function (stringData) {
             const json = JSON.parse(stringData);
-            $(json).each(function () {
+            const data = (json.data ? json.data : json);
+
+            $(data).each(function () {
                 this.dateTime = this.dateTime.replace('T', ' ').substr(0, 16);
             });
             return json;
@@ -62,6 +60,14 @@ $(function () {
             "createdRow": function (row, data, dataIndex) {
                 $(row).attr("data-mealExcess", data.excess);
             },
+            "ajax": {
+                "data": function (data) {
+                    $.each($("#filter").serializeArray(), function (index, value) {
+                        data[value.name] = value.value;
+                    });
+                    return data;
+                    }
+                }
         },
         updateTable: updateFilteredTable
     });

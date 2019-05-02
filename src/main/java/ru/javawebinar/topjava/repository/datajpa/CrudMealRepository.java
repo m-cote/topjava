@@ -1,17 +1,18 @@
 package ru.javawebinar.topjava.repository.datajpa;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Transactional(readOnly = true)
-public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
+public interface CrudMealRepository extends DataTablesRepository<Meal, Integer> {
 
     @Modifying
     @Transactional
@@ -24,6 +25,19 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
 
     @Query("SELECT m FROM Meal m WHERE m.user.id=:userId ORDER BY m.dateTime DESC")
     List<Meal> getAll(@Param("userId") int userId);
+
+
+    interface ExceededByDay {
+        LocalDate getDay();
+        Boolean getExceeded();
+    }
+
+    @Query(value = "SELECT  CAST(m.date_time AS DATE) AS DAY, CASE WHEN( SUM(m.calories) > :caloriesQuota) THEN TRUE ELSE FALSE END AS EXCEEDED " +
+            "FROM meals m " +
+            "WHERE m.user_id=:userId " +
+            "      AND CAST(m.date_time AS DATE) IN :days " +
+            "GROUP BY CAST(m.date_time AS DATE)", nativeQuery = true)
+    List<ExceededByDay> getExcessByDays(@Param("userId") int userId, @Param("days") List<LocalDate> days, @Param("caloriesQuota") int caloriesQuota);
 
     @SuppressWarnings("JpaQlInspection")
     @Query("SELECT m from Meal m WHERE m.user.id=:userId AND m.dateTime BETWEEN :startDate AND :endDate ORDER BY m.dateTime DESC")

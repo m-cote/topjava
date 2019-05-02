@@ -19,6 +19,14 @@ public class DateTimeUtil {
     private DateTimeUtil() {
     }
 
+    public static LocalTime adjustStartTime(LocalTime localTime) {
+        return localTime != null ? localTime : LocalTime.MIN;
+    }
+
+    public static LocalTime adjustEndTime(LocalTime localTime) {
+        return localTime != null ? localTime : LocalTime.MAX;
+    }
+
     public static LocalDateTime adjustStartDateTime(LocalDate localDate) {
         return adjustDateTime(localDate, MIN_DATE, LocalTime.MIN);
     }
