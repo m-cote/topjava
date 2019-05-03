@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.service;
 
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import ru.javawebinar.topjava.model.User;
@@ -24,6 +25,12 @@ public interface UserService {
     void update(UserTo user);
 
     List<User> getAll();
+
+    Page<User> getPageable(String text,
+                           int page,
+                           int size,
+                           String sortBy,
+                           String direction);
 
     DataTablesOutput<User> getAll(DataTablesInput input);
 

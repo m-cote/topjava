@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.repository;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import ru.javawebinar.topjava.model.User;
@@ -20,7 +21,15 @@ public interface UserRepository {
 
     List<User> getAll();
 
-    default DataTablesOutput<User> getAll(DataTablesInput input){
+    default Page<User> getPageable(String text,
+                                   int page,
+                                   int size,
+                                   String sortBy,
+                                   String direction) {
+        throw new UnsupportedOperationException();
+    }
+
+    default DataTablesOutput<User> getAll(DataTablesInput input) {
         throw new UnsupportedOperationException();
     }
 

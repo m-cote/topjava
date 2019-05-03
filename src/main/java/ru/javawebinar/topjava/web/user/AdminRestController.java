@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.web.user;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,7 @@ import ru.javawebinar.topjava.View;
 import ru.javawebinar.topjava.model.User;
 
 import java.net.URI;
-import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = AdminRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -18,10 +19,14 @@ public class AdminRestController extends AbstractUserController {
 
     public static final String REST_URL = "/rest/admin/users";
 
-    @Override
     @GetMapping
-    public List<User> getAll() {
-        return super.getAll();
+    public Page<User> getPageable(@RequestParam(required = false, defaultValue = "_") String contains,
+                                  @RequestParam(required = false) Optional<Integer> page,
+                                  @RequestParam(required = false) Optional<Integer> size,
+                                  @RequestParam(required = false, defaultValue = "") String sortBy,
+                                  @RequestParam(required = false, defaultValue = "") String direction) {
+        log.info("getPageable");
+        return service.getPageable(contains, page.orElse(0), size.orElse(20), sortBy, direction);
     }
 
     @Override

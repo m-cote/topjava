@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -65,6 +66,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public List<User> getAll() {
         return repository.getAll();
+    }
+
+    @Cacheable("users")
+    @Override
+    public Page<User> getPageable(String text,
+                                  int page,
+                                  int size,
+                                  String sortBy,
+                                  String direction) {
+        Assert.notNull(text, "search text must not be null");
+        Assert.notNull(sortBy, "sortBy must not be null");
+        Assert.notNull(direction, "direction must not be null");
+        return repository.getPageable(text, page, size, sortBy, direction);
     }
 
     @Cacheable("users")

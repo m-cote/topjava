@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.repository.datajpa;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -7,7 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.repository.query.QueryByExampleExecutor;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.User;
 
@@ -30,6 +31,9 @@ public interface CrudUserRepository extends DataTablesRepository<User, Integer>,
 
     @Override
     List<User> findAll(Sort sort);
+
+    @Query("SELECT u FROM User u WHERE u.email LIKE %?1% OR u.name LIKE %?1%")
+    Page<User> findText(String text, Pageable pageable);
 
     User getByEmail(String email);
 

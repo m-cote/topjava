@@ -24,7 +24,7 @@ public abstract class AbstractUserController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private UserService service;
+    protected UserService service;
 
     @Autowired
     private UniqueMailValidator emailValidator;

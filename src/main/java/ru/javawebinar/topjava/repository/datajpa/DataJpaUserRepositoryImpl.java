@@ -1,12 +1,15 @@
 package ru.javawebinar.topjava.repository.datajpa;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.util.SortingUtil;
 
 import java.util.List;
 
@@ -40,6 +43,14 @@ public class DataJpaUserRepositoryImpl implements UserRepository {
     @Override
     public List<User> getAll() {
         return crudRepository.findAll(SORT_NAME_EMAIL);
+    }
+
+    @Override
+    public Page<User> getPageable(String text, int page, int size, String sortBy, String direction) {
+
+        Sort sort = SortingUtil.getSortFromString(sortBy, direction, SORT_NAME_EMAIL);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+        return crudRepository.findText(text, pageRequest);
     }
 
     @Override
