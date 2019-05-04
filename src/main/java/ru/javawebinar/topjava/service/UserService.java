@@ -26,11 +26,7 @@ public interface UserService {
 
     List<User> getAll();
 
-    Page<User> getPageable(String text,
-                           int page,
-                           int size,
-                           String sortBy,
-                           String direction);
+    Page<User> getPageable(String text, int page, int size, String sortBy, String direction);
 
     DataTablesOutput<User> getAll(DataTablesInput input);
 

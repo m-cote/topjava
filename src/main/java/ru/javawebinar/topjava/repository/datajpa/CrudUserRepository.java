@@ -33,7 +33,7 @@ public interface CrudUserRepository extends DataTablesRepository<User, Integer>,
     List<User> findAll(Sort sort);
 
     @Query("SELECT u FROM User u WHERE u.email LIKE %?1% OR u.name LIKE %?1%")
-    Page<User> findText(String text, Pageable pageable);
+    Page<User> getAll(String text, Pageable pageable);
 
     User getByEmail(String email);
 

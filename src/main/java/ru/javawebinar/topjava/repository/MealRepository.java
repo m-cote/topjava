@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.repository;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import ru.javawebinar.topjava.model.Meal;
@@ -26,6 +27,10 @@ public interface MealRepository {
         throw new UnsupportedOperationException();
     }
 
+    default Page<Meal> getPageable(int userId, String text, int page, int size, String sortBy, String direction) {
+        throw new UnsupportedOperationException();
+    }
+
     default Map<LocalDate, Boolean> getExceededByDays(int userId, List<LocalDate> days, int caloriesQuota) {
         throw new UnsupportedOperationException();
     }
@@ -34,6 +39,11 @@ public interface MealRepository {
     List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId);
 
     default DataTablesOutput<Meal> getBetween(int userId, DataTablesInput input, LocalDateTime startDate, LocalDateTime endDate) {
+        throw new UnsupportedOperationException();
+    }
+
+    default Page<Meal> getBetween(int userId, String text, int page, int size, String sortBy, String direction,
+                                  LocalDateTime startDate, LocalDateTime endDate) {
         throw new UnsupportedOperationException();
     }
 

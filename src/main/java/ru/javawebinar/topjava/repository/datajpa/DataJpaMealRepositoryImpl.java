@@ -1,6 +1,9 @@
 package ru.javawebinar.topjava.repository.datajpa;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Repository;
@@ -8,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.specifications.MealSpecifications;
+import ru.javawebinar.topjava.util.DateTimeUtil;
+import ru.javawebinar.topjava.util.SortingUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Repository
 public class DataJpaMealRepositoryImpl implements MealRepository {
+    private static final Sort SORT_DATETIME = new Sort(Sort.Direction.DESC, "dateTime");
 
     @Autowired
     private CrudMealRepository crudMealRepository;
@@ -56,6 +62,14 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
     }
 
     @Override
+    public Page<Meal> getPageable(int userId, String text, int page, int size, String sortBy, String direction) {
+        Sort sort = SortingUtil.getSortFromString(sortBy, direction, SORT_DATETIME);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+        return crudMealRepository.getAll(text, pageRequest, userId);
+    }
+
+
+    @Override
     public Map<LocalDate, Boolean> getExceededByDays(int userId, List<LocalDate> days, int caloriesQuota) {
 
         if (!days.isEmpty()) {
@@ -77,7 +91,15 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
 
     @Override
     public DataTablesOutput<Meal> getBetween(int userId, DataTablesInput input, LocalDateTime startDate, LocalDateTime endDate) {
-        return crudMealRepository.findAll(input, MealSpecifications.isWithinPeriod(startDate, endDate), MealSpecifications.belongsToUser(userId));
+        return crudMealRepository.findAll(input, MealSpecifications.isWithinDateAndTime(startDate, endDate), MealSpecifications.belongsToUser(userId));
+    }
+
+    @Override
+    public Page<Meal> getBetween(int userId, String text, int page, int size, String sortBy, String direction, LocalDateTime startDate, LocalDateTime endDate) {
+        Sort sort = SortingUtil.getSortFromString(sortBy, direction, SORT_DATETIME);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        return crudMealRepository.getBetween(text, pageRequest, startDate, endDate, DateTimeUtil.minutesSinceMidnight(startDate), DateTimeUtil.minutesSinceMidnight(endDate), userId);
     }
 
     @Override

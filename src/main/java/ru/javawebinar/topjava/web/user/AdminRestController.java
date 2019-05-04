@@ -20,11 +20,11 @@ public class AdminRestController extends AbstractUserController {
     public static final String REST_URL = "/rest/admin/users";
 
     @GetMapping
-    public Page<User> getPageable(@RequestParam(required = false, defaultValue = "_") String contains,
-                                  @RequestParam(required = false) Optional<Integer> page,
-                                  @RequestParam(required = false) Optional<Integer> size,
-                                  @RequestParam(required = false, defaultValue = "") String sortBy,
-                                  @RequestParam(required = false, defaultValue = "") String direction) {
+    public Page<User> getAll(@RequestParam(required = false, defaultValue = "_") String contains,
+                             @RequestParam(required = false) Optional<Integer> page,
+                             @RequestParam(required = false) Optional<Integer> size,
+                             @RequestParam(required = false, defaultValue = "") String sortBy,
+                             @RequestParam(required = false, defaultValue = "") String direction) {
         log.info("getPageable");
         return service.getPageable(contains, page.orElse(0), size.orElse(20), sortBy, direction);
     }

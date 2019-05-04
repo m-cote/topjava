@@ -52,12 +52,12 @@ public class MealUIController extends AbstractMealController {
     @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
     public DataTablesOutput<MealTo> getBetween(@Valid DataTablesInput input,
                                                @RequestParam(required = false) LocalDate startDate,
-                                               @RequestParam(required = false) LocalTime startTime,
                                                @RequestParam(required = false) LocalDate endDate,
+                                               @RequestParam(required = false) LocalTime startTime,
                                                @RequestParam(required = false) LocalTime endTime) {
 
         int userId = SecurityUtil.authUserId();
         log.info("getBetween dates({} - {}) time({} - {}) for user {}", startDate, endDate, startTime, endTime, userId);
-        return service.getBetweenDateTime(userId, input, startDate, startTime, endDate, endTime);
+        return service.getBetweenDateTime(userId, input, startDate, endDate, startTime, endTime);
     }
 }

@@ -21,11 +21,7 @@ public interface UserRepository {
 
     List<User> getAll();
 
-    default Page<User> getPageable(String text,
-                                   int page,
-                                   int size,
-                                   String sortBy,
-                                   String direction) {
+    default Page<User> getPageable(String text, int page, int size, String sortBy, String direction) {
         throw new UnsupportedOperationException();
     }
 

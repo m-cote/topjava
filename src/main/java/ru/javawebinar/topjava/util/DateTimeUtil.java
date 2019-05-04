@@ -19,20 +19,24 @@ public class DateTimeUtil {
     private DateTimeUtil() {
     }
 
-    public static LocalTime adjustStartTime(LocalTime localTime) {
-        return localTime != null ? localTime : LocalTime.MIN;
-    }
-
-    public static LocalTime adjustEndTime(LocalTime localTime) {
-        return localTime != null ? localTime : LocalTime.MAX;
-    }
-
     public static LocalDateTime adjustStartDateTime(LocalDate localDate) {
         return adjustDateTime(localDate, MIN_DATE, LocalTime.MIN);
     }
 
     public static LocalDateTime adjustEndDateTime(LocalDate localDate) {
         return adjustDateTime(localDate, MAX_DATE, LocalTime.MAX);
+    }
+
+    public static LocalDateTime adjustStartDateTime(LocalDate localDate, LocalTime localTime) {
+        return adjustDateTime(localDate, localTime, MIN_DATE, LocalTime.MIN);
+    }
+
+    public static LocalDateTime adjustEndDateTime(LocalDate localDate, LocalTime localTime) {
+        return adjustDateTime(localDate, localTime, MAX_DATE, LocalTime.MAX);
+    }
+
+    private static LocalDateTime adjustDateTime(LocalDate localDate, LocalTime localTime, LocalDate defaultDate, LocalTime defaultTime) {
+        return LocalDateTime.of(localDate != null ? localDate : defaultDate, localTime != null ? localTime : defaultTime);
     }
 
     private static LocalDateTime adjustDateTime(LocalDate localDate, LocalDate defaultDate, LocalTime adjustTime) {
@@ -50,4 +54,9 @@ public class DateTimeUtil {
     public static LocalTime parseLocalTime(@Nullable String str) {
         return StringUtils.isEmpty(str) ? null : LocalTime.parse(str);
     }
+
+    public static int minutesSinceMidnight(LocalDateTime dateTime) {
+        return (dateTime.getHour() * 60) + dateTime.getMinute();
+    }
+
 }

@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
@@ -9,16 +10,15 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.util.Util;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
@@ -55,38 +55,48 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
-    public DataTablesOutput<MealTo> getAll(int userId, DataTablesInput input) {
-        return getDataTablesOutputWithExcess(repository.getAll(userId, input), userId, meal -> true);
+    public Page<MealTo> getPageable(int userId, String text, int page, int size, String sortBy, String direction) {
+        Assert.notNull(text, "search text must not be null");
+        Assert.notNull(sortBy, "sortBy must not be null");
+        Assert.notNull(direction, "direction must not be null");
+        Page<Meal> mealsPage = repository.getPageable(userId, text, page, size, sortBy, direction);
+
+        return mealsPage.map(toDtoFunction(mealsPage.get(), userId));
     }
 
     @Override
-    public DataTablesOutput<MealTo> getBetweenDateTime(int userId, DataTablesInput input, LocalDateTime startDate, LocalTime startTime, LocalDateTime endDate, LocalTime endTime) {
-        Assert.notNull(startDate, "startDate must not be null");
-        Assert.notNull(startTime, "startTime  must not be null");
-        Assert.notNull(endDate, "endDate must not be null");
-        Assert.notNull(endTime, "endTime  must not be null");
-        DataTablesOutput<Meal> mealsOutput = repository.getBetween(userId, input, startDate, endDate);
-        return getDataTablesOutputWithExcess(mealsOutput, userId, meal -> Util.isBetween(meal.getTime(), startTime, endTime));
+    public DataTablesOutput<MealTo> getAll(int userId, DataTablesInput input) {
+        return getDataTablesOutputWithExcess(repository.getAll(userId, input), userId);
     }
 
-    private DataTablesOutput<MealTo> getDataTablesOutputWithExcess(DataTablesOutput<Meal> output, int userId, Predicate<Meal> filter) {
+    @Override
+    public DataTablesOutput<MealTo> getBetweenDateTime(int userId, DataTablesInput input, LocalDateTime startDate, LocalDateTime endDate) {
+        Assert.notNull(startDate, "startDate must not be null");
+        Assert.notNull(endDate, "endDate must not be null");
+        DataTablesOutput<Meal> mealsOutput = repository.getBetween(userId, input, startDate, endDate);
+        return getDataTablesOutputWithExcess(mealsOutput, userId);
+    }
+
+    @Override
+    public Page<MealTo> getBetweenDateTime(int userId, String text, int page, int size, String sortBy, String direction, LocalDateTime startDate, LocalDateTime endDate) {
+        Assert.notNull(text, "search text must not be null");
+        Assert.notNull(sortBy, "sortBy must not be null");
+        Assert.notNull(direction, "direction must not be null");
+        Assert.notNull(startDate, "startDate must not be null");
+        Assert.notNull(endDate, "endDate must not be null");
+        Page<Meal> mealsPage = repository.getBetween(userId, text, page, size, sortBy, direction, startDate, endDate);
+
+        return mealsPage.map(toDtoFunction(mealsPage.get(), userId));
+    }
+
+    private DataTablesOutput<MealTo> getDataTablesOutputWithExcess(DataTablesOutput<Meal> output, int userId) {
         if (output.getError() != null) {
             throw new IllegalArgumentException(output.getError());
         }
 
-        List<Meal> meals = output.getData().stream()
-                .filter(filter)
-                .collect(Collectors.toList());
-
-        List<LocalDate> days = meals.stream()
-                .map(meal -> meal.getDateTime().toLocalDate())
-                .distinct()
-                .collect(Collectors.toList());
-
-        Map<LocalDate, Boolean> exceededByDays = repository.getExceededByDays(userId, days, SecurityUtil.authUserCaloriesPerDay());
-
+        List<Meal> meals = output.getData();
         List<MealTo> mealTos = meals.stream()
-                .map(meal -> MealsUtil.createWithExcess(meal, exceededByDays.get(meal.getDateTime().toLocalDate())))
+                .map(toDtoFunction(meals.stream(), userId))
                 .collect(Collectors.toList());
 
         DataTablesOutput<MealTo> result = new DataTablesOutput<>();
@@ -96,6 +106,16 @@ public class MealServiceImpl implements MealService {
         result.setRecordsFiltered(output.getRecordsFiltered());
         result.setRecordsTotal(output.getRecordsTotal());
         return result;
+    }
+
+    private Function<Meal, MealTo> toDtoFunction(Stream<Meal> stream, int userId) {
+        List<LocalDate> days = stream
+                .map(meal -> meal.getDateTime().toLocalDate())
+                .distinct()
+                .collect(Collectors.toList());
+
+        Map<LocalDate, Boolean> exceededByDays = repository.getExceededByDays(userId, days, SecurityUtil.authUserCaloriesPerDay());
+        return meal -> MealsUtil.createWithExcess(meal, exceededByDays.get(meal.getDateTime().toLocalDate()));
     }
 
     @Override

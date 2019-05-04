@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.repository.datajpa;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -26,6 +28,8 @@ public interface CrudMealRepository extends DataTablesRepository<Meal, Integer> 
     @Query("SELECT m FROM Meal m WHERE m.user.id=:userId ORDER BY m.dateTime DESC")
     List<Meal> getAll(@Param("userId") int userId);
 
+    @Query("SELECT m FROM Meal m WHERE m.user.id=:userId AND m.description LIKE %:text%")
+    Page<Meal> getAll(@Param("text") String text, Pageable pageable, @Param("userId") int userId);
 
     interface ExceededByDay {
         LocalDate getDay();
@@ -42,6 +46,9 @@ public interface CrudMealRepository extends DataTablesRepository<Meal, Integer> 
     @SuppressWarnings("JpaQlInspection")
     @Query("SELECT m from Meal m WHERE m.user.id=:userId AND m.dateTime BETWEEN :startDate AND :endDate ORDER BY m.dateTime DESC")
     List<Meal> getBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, @Param("userId") int userId);
+
+    @Query("SELECT m from Meal m WHERE m.user.id=:userId AND m.dateTime BETWEEN :startDate AND :endDate AND m.description LIKE %:text% AND ((hour(m.dateTime) * 60)+minute(m.dateTime)) >= :startTime AND ((hour(m.dateTime) * 60)+minute(m.dateTime)) <= :endTime")
+    Page<Meal> getBetween(@Param("text") String text, Pageable pageable, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, @Param("startTime") int startTime, @Param("endTime") int endTime, @Param("userId") int userId);
 
     @Query("SELECT m FROM Meal m JOIN FETCH m.user WHERE m.id = ?1 and m.user.id = ?2")
     Meal getWithUser(int id, int userId);

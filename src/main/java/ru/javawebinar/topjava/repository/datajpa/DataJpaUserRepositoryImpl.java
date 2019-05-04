@@ -50,7 +50,7 @@ public class DataJpaUserRepositoryImpl implements UserRepository {
 
         Sort sort = SortingUtil.getSortFromString(sortBy, direction, SORT_NAME_EMAIL);
         PageRequest pageRequest = PageRequest.of(page, size, sort);
-        return crudRepository.findText(text, pageRequest);
+        return crudRepository.getAll(text, pageRequest);
     }
 
     @Override
