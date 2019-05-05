@@ -53,7 +53,7 @@
     </div>
 </div>
 <div class="container lead">
-    &nbsp;&nbsp;&nbsp;<a href="https://github.com/JavaOPs/topjava">Java Enterprise проект</a> с
+    &nbsp;&nbsp;&nbsp;<a href="https://github.com/m-cote/topjava">Java Enterprise проект</a> с
     регистрацией/авторизацией и интерфейсом на основе ролей (USER, ADMIN).
     Администратор может создавать/редактировать/удалять пользователей, а пользователи - управлять своим
     профилем и данными (день, еда, калории) через UI (по AJAX) и по REST интерфейсу с базовой авторизацией.
